@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from posts.models import Group, Post
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
@@ -39,7 +40,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, post=self.get_post())
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(ListModelMixin, CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     filter_backends = (SearchFilter,)
     search_fields = ('user__username', 'following__username')
